@@ -1,0 +1,152 @@
+### Register a new user (Registrar un nuevo dueño)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+    "fullName": "Juan Perez",
+    "email": "juan.perez@email.com",
+    "password": "MiPasswordSeguro123",
+    "phone": "3001234567"
+}
+
+### Login user (Iniciar sesión)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "juan.perez@email.com",
+    "password": "MiPasswordSeguro123",
+    "deviceId": "iphone_juan_001"
+}
+
+### Prueba 1: Intentar ver mascotas sin Token (Debe fallar)
+GET http://localhost:3000/api/pets
+Content-Type: application/json
+x-device-id: iphone_juan_001
+
+### Prueba 2: Registrar Mascota 1 (Debe funcionar)
+POST http://localhost:3000/api/pets
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMwNzU3ODUsImV4cCI6MTc5NTY2Nzc4NX0.9uD8mj-686u9r2RFGH3uHBP7e6IZYHvITj-fZWnVVPE
+x-device-id: iphone_juan_001
+
+{
+    "nombre": "Firulais",
+    "especie": "Perro",
+    "raza": "Criollo",
+    "edad": 3
+}
+
+### Prueba 3: Registrar Mascota 2 (Debe funcionar)
+POST http://localhost:3000/api/pets
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMwNzU3ODUsImV4cCI6MTc5NTY2Nzc4NX0.9uD8mj-686u9r2RFGH3uHBP7e6IZYHvITj-fZWnVVPE
+x-device-id: iphone_juan_001
+
+{
+    "nombre": "Michi",
+    "especie": "Gato",
+    "raza": "Siamés",
+    "edad": 1
+}
+
+### Prueba 4: Intentar registrar Mascota 3 (Debe fallar por la regla PostgreSQL)
+POST http://localhost:3000/api/pets
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMwNzU3ODUsImV4cCI6MTc5NTY2Nzc4NX0.9uD8mj-686u9r2RFGH3uHBP7e6IZYHvITj-fZWnVVPE
+x-device-id: iphone_juan_001
+
+{
+    "nombre": "Toby",
+    "especie": "Perro",
+    "raza": "Pug",
+    "edad": 2
+}
+
+### Prueba 5: Registrar una Clínica Veterinaria
+POST http://localhost:3000/api/clinics/register
+Content-Type: application/json
+
+{
+    "nombre_clinica": "Veterinaria Huellitas Sanas",
+    "email": "contacto@huellitassanas.com",
+    "password": "PasswordClinica123",
+    "telefono": "6011234567",
+    "direccion": "Calle 45 # 10-20, Bogotá",
+    "horarios_atencion": "Lunes a Sábado de 8am a 6pm"
+}
+
+### Prueba 6: Login de la Clínica
+POST http://localhost:3000/api/clinics/login
+Content-Type: application/json
+
+{
+    "email": "contacto@huellitassanas.com",
+    "password": "PasswordClinica123"
+}
+
+### 1. La Clínica sube un producto con precio base de $10.000 COP
+POST http://localhost:3000/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ5MGQ0ZWM1LWM1ZjctNGFjNy04MzI0LWQyYWQ1NTIwNTMwNCIsImVtYWlsIjoiY29udGFjdG9AaHVlbGxpdGFzc2FuYXMuY29tIiwicm9sZSI6IkNMSU5JQ0EiLCJpYXQiOjE3OTMyNTI4NDEsImV4cCI6MTc5NTg0NDg0MX0.ycJY8GcWXXOVsDla1RuxwjWqp0fUyh8sZv5TjhVLys8
+
+{
+    "nombre": "Consulta General Veterinaria",
+    "descripcion": "Revision medica completa para perros y gatos",
+    "precio_base": 10000.00
+}
+
+### 2. Pedro (Usuario NO suscrito) ve el catálogo
+# (El sistema debe mostrar el precio con el 20% de aumento: $12.000 y tu comisión del 10% del incremento)
+GET http://localhost:3000/api/products/clinic/d90d4ec5-c5f7-4ac7-8324-d2ad55205304
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMGMxMDI3LWY3YWEtNDEwNS04MGMxLWFmZTkzYjljMGJhNyIsImVtYWlsIjoicGVkcm8uZ29tZXpAZW1haWwuY29tIiwiaWF0IjoxNzkzMjU0NTUxLCJleHAiOjE3OTU4NDY1NTF9._YkHWWADs7bASRrEGgW72oz2KG1FfRej6-U-RYJzzs0
+
+
+### 3. Simulamos que Juan Pérez activa su suscripción en la Base de Datos (En pgAdmin ejecuta: UPDATE usuarios SET suscripcion_activa = TRUE WHERE email = 'juan.perez@email.com';)
+# Luego de activarla, Juan Pérez vuelve a ver el catálogo
+# (El sistema debe aplicarle el 15% de descuento sobre el precio público y calcular tu 5% de mantenimiento)
+GET http://localhost:3000/api/products/clinic/d90d4ec5-c5f7-4ac7-8324-d2ad55205304
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMyNTM5OTUsImV4cCI6MTc5NTg0NTk5NX0._8N2CyS_qN9Ns9s6_k2hFhwYecmL1XC1vYvrrcULjG4
+
+### Registrar a Pedro (Nace SIN suscripción)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+    "fullName": "Pedro Gomez",
+    "email": "pedro.gomez@email.com",
+    "password": "MiPasswordSeguro123",
+    "phone": "3009876543"
+}
+
+### Login de Pedro (Copia el token que te devuelva)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "pedro.gomez@email.com",
+    "password": "MiPasswordSeguro123",
+    "deviceId": "android_pedro_001"
+}
+
+### 1. El usuario intenta pagar un producto (Checkout)
+# Se usa el Token del usuario (Juan o Pedro) y el ID del producto que quieren comprar
+POST http://localhost:3000/api/payments/checkout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMyNTM5OTUsImV4cCI6MTc5NTg0NTk5NX0._8N2CyS_qN9Ns9s6_k2hFhwYecmL1XC1vYvrrcULjG4
+
+{
+    "producto_id": "73fed521-6a4b-411a-a984-d2606742b08d"
+}
+
+### 2. La pasarela (Wompi) avisa a escondidas que el pago fue exitoso (Webhook)
+# Nota: Este no lleva token porque lo envía el banco, no el usuario.
+POST http://localhost:3000/api/payments/webhook
+Content-Type: application/json
+
+{
+    "id_transaccion": "WOMPI-987654321",
+    "estado": "APROBADO",
+    "producto_id": "73fed521-6a4b-411a-a984-d2606742b08d",
+    "usuario_id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliOGFlZmQ4LTRhYjUtNDVmYS1hNmY3LTM1NjUxNTRjZTMzYiIsImVtYWlsIjoianVhbi5wZXJlekBlbWFpbC5jb20iLCJpYXQiOjE3OTMyNTM5OTUsImV4cCI6MTc5NTg0NTk5NX0._8N2CyS_qN9Ns9s6_k2hFhwYecmL1XC1vYvrrcULjG4"
+}
